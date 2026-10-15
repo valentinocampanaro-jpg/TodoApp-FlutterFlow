@@ -6,7 +6,6 @@ import '/backend/backend.dart';
 
 import '/auth/base_auth_user_provider.dart';
 
-import '/main.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
@@ -78,13 +77,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? NavBarPage() : LoginWidget(),
+          appStateNotifier.loggedIn ? MyAIWidget() : MyAIWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
           builder: (context, _) =>
-              appStateNotifier.loggedIn ? NavBarPage() : LoginWidget(),
+              appStateNotifier.loggedIn ? MyAIWidget() : MyAIWidget(),
         ),
         FFRoute(
           name: LoginWidget.routeName,
@@ -94,8 +93,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: TasksWidget.routeName,
           path: TasksWidget.routePath,
-          builder: (context, params) =>
-              params.isEmpty ? NavBarPage(initialPage: 'tasks') : TasksWidget(),
+          builder: (context, params) => TasksWidget(),
         ),
         FFRoute(
           name: OnboardingWidget.routeName,
@@ -118,9 +116,17 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: CompletedWidget.routeName,
           path: CompletedWidget.routePath,
-          builder: (context, params) => params.isEmpty
-              ? NavBarPage(initialPage: 'completed')
-              : CompletedWidget(),
+          builder: (context, params) => CompletedWidget(),
+        ),
+        FFRoute(
+          name: CloudFunctionsWidget.routeName,
+          path: CloudFunctionsWidget.routePath,
+          builder: (context, params) => CloudFunctionsWidget(),
+        ),
+        FFRoute(
+          name: MyAIWidget.routeName,
+          path: MyAIWidget.routePath,
+          builder: (context, params) => MyAIWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -291,7 +297,7 @@ class FFRoute {
 
           if (requireAuth && !appStateNotifier.loggedIn) {
             appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
-            return '/login';
+            return '/myAI';
           }
           return null;
         },
@@ -332,6 +338,10 @@ class FFRoute {
                     duration: transitionInfo.duration,
                     reverseDuration: transitionInfo.duration,
                     alignment: transitionInfo.alignment,
+                    curve: transitionInfo.transitionType ==
+                            PageTransitionType.scale
+                        ? const Interval(0.0, 0.5)
+                        : Curves.linear,
                     child: child,
                   ).buildTransitions(
                     context,
